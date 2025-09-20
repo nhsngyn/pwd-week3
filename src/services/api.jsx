@@ -1,42 +1,41 @@
 import axios from 'axios';
 
 // Axios 인스턴스 생성
-
 const api = axios.create({
-    baseURL: 'https://jsonplaceholder.typicode.com',
-    timeout: 10000,
+  baseURL: 'https://jsonplaceholder.typicode.com', // 실습용 가짜 API
+  timeout: 10000,
 });
 
 // 요청 인터셉터
 api.interceptors.request.use(
-    (config) => {
-        console.log('API 요청:', config.url);
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
+  (config) => {
+    console.log('API 요청:', config.url);
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 // 응답 인터셉터
 api.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        console.error('API 에러:', error);
-        return Promise.reject(error);
-    }
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.error('API 에러:', error);
+    return Promise.reject(error);
+  }
 );
 
-//API 함수들
+// API 함수들
 export const restaurantAPI = {
-// 맛집 목록 가져오기 (가짜 데이터)
-getRestaurants: async () => {
-    //실제로는 백엔드 api를 호출하지만, 실습용으로 가짜 데이터 변환
+  // 맛집 목록 가져오기 (가짜 데이터)
+  getRestaurants: async () => {
+    // 실제로는 백엔드 API를 호출하지만, 실습용으로 가짜 데이터 반환
     return {
-        data: [
- {
+      data: [
+        {
           id: 1,
           name: "송림식당",
           category: "한식",
@@ -72,19 +71,23 @@ getRestaurants: async () => {
           likes: 0,
           image: "https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190707_63%2F1562462598960nPDMy_JPEG%2FW7iKQEhTMzCF3flC1t0pzgzF.jpeg.jpg"
         }
-    ]
+      ]
     };
-},
-// 맛집 상세 정보 가져오기
-getRestaurantById: async (id) => {
+  },
+
+  // 맛집 상세 정보 가져오기
+  getRestaurantById: async (id) => {
     const restaurants = await restaurantAPI.getRestaurants();
     const restaurant = restaurants.data.find(r => r.id === parseInt(id));
-    return {data: restaurant};
-},
-getPopularRestaurants: async () => {
-    const restaurants = await restaurantAPI.getRestaurants();
-    const sorted = [...restaurants.data].sort((a,b)=>b.rating - a.rating);
-    return {data: sorted.slice(0.5)};
-}
+    return { data: restaurant };
+  },
 
+  // 인기 맛집 가져오기
+  getPopularRestaurants: async () => {
+    const restaurants = await restaurantAPI.getRestaurants();
+    const sorted = [...restaurants.data].sort((a, b) => b.rating - a.rating);
+    return { data: sorted.slice(0, 5) };
+  }
 };
+
+export default api;
