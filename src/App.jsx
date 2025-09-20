@@ -14,7 +14,7 @@ import SubmitPage from './pages/SubmitPage';
 
 // Components
 import Header from './components/Header';
-import NotFound from './compinents/NotFound';
+import NotFound from './components/NotFound';
 
 // Styles
 import GlobalStyles from './styles/GlobalStyles';
