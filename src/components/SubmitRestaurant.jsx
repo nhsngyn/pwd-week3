@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { toast } from 'react-toastify';
 import { FaCheckCircle } from 'react-icons/fa';
 // 1. apiClient (axios 인스턴스)를 불러옵니다.
-import apiClient from '../api/client';
+import apiClient from '../services/api';
 
 // --- (스타일 컴포넌트는 이전과 동일하여 생략합니다) ---
 const FormContainer = styled.div`
