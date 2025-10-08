@@ -27,51 +27,51 @@ api.interceptors.response.use(
 
 export const restaurantAPI = {
   getRestaurants: async () => {
-    const response = await api.get('/api/restaurants');
+    const response = await api.get('/restaurants');
     return response.data;
   },
 
   createRestaurant: async (payload) => {
-    const response = await api.post('/api/restaurants', payload);
+    const response = await api.post('/restaurants', payload);
     return response.data;
   },
 
   updateRestaurant: async (id, payload) => {
-    const response = await api.put(`/api/restaurants/${id}`, payload);
+    const response = await api.put(`/restaurants/${id}`, payload);
     return response.data;
   },
 
   deleteRestaurant: async (id) => {
-    const response = await api.delete(`/api/restaurants/${id}`);
+    const response = await api.delete(`/restaurants/${id}`);
     return response.status;
   },
 
   getRestaurantById: async (id) => {
-    const response = await api.get(`/api/restaurants/${id}`);
+    const response = await api.get(`/restaurants/${id}`);
     return response.data;
   },
 
   getPopularRestaurants: async () => {
-    const response = await api.get('/api/restaurants/popular');
+    const response = await api.get('/restaurants/popular');
     return response.data;
   },
 };
 
 export const submissionAPI = {
   createSubmission: async (payload) => {
-    const response = await api.post('/api/submissions', payload);
+    const response = await api.post('/submissions', payload);
     return response.data;
   },
   listSubmissions: async (status) => {
-    const response = await api.get('/api/submissions', { params: { status } });
+    const response = await api.get('/submissions', { params: { status } });
     return response.data;
   },
   updateSubmission: async (id, payload) => {
-    const response = await api.put(`/api/submissions/${id}`, payload);
+    const response = await api.put(`/submissions/${id}`, payload);
     return response.data;
   },
   deleteSubmission: async (id) => {
-    const response = await api.delete(`/api/submissions/${id}`);
+    const response = await api.delete(`/submissions/${id}`);
     return response.status;
   },
 };
