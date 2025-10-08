@@ -4,7 +4,10 @@ import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { toast } from 'react-toastify';
 import { FaCheckCircle } from 'react-icons/fa';
+// 1. apiClient (axios 인스턴스)를 불러옵니다.
+import apiClient from '../api/client';
 
+// --- (스타일 컴포넌트는 이전과 동일하여 생략합니다) ---
 const FormContainer = styled.div`
   background: white;
   padding: 2rem;
@@ -119,29 +122,25 @@ const SuccessMessage = styled.div`
   }
 `;
 
+
 function SubmitRestaurant() {
   const [submitted, setSubmitted] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm();
 
+  // 2. onSubmit 함수를 수정합니다.
   const onSubmit = async (data) => {
+    // 'data' 파라미터: react-hook-form이 폼 데이터를 객체 형태로 넘겨줍니다.
     try {
-      // Netlify Forms로 제출
-      const response = await fetch("/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          "form-name": "restaurant-submit",
-          ...data
-        }).toString()
-      });
+      // apiClient.post를 사용해 백엔드로 데이터를 전송합니다.
+      await apiClient.post('/submissions', data);
       
-      if (response.ok) {
-        setSubmitted(true);
-        toast.success('맛집이 성공적으로 제보되었습니다! 🎉');
-        reset();
-        setTimeout(() => setSubmitted(false), 5000);
-      }
+      setSubmitted(true);
+      toast.success('맛집이 성공적으로 제보되었습니다! 🎉');
+      reset();
+      setTimeout(() => setSubmitted(false), 5000);
+
     } catch (error) {
+      console.error("제출 에러:", error);
       toast.error('제출 중 오류가 발생했습니다.');
     }
   };
@@ -165,20 +164,19 @@ function SubmitRestaurant() {
     <FormContainer>
       <FormTitle>🍽️ 새로운 맛집 제보하기</FormTitle>
       
+      {/* 3. JSX 부분은 수정할 필요가 없습니다. */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input type="hidden" name="form-name" value="restaurant-submit" />
-        
         <FormGroup>
-          <Label htmlFor="restaurantName">맛집 이름 *</Label>
+          <Label htmlFor="name">맛집 이름 *</Label>
           <Input
-            id="restaurantName"
-            {...register("restaurantName", {
+            id="name"
+            {...register("name", {
               required: "맛집 이름은 필수입니다"
             })}
             placeholder="예: OO식당"
           />
-          {errors.restaurantName && (
-            <ErrorMessage>{errors.restaurantName.message}</ErrorMessage>
+          {errors.name && (
+            <ErrorMessage>{errors.name.message}</ErrorMessage>
           )}
         </FormGroup>
 
@@ -206,16 +204,16 @@ function SubmitRestaurant() {
         </FormGroup>
 
         <FormGroup>
-          <Label htmlFor="location">위치 *</Label>
+          <Label htmlFor="address">위치 *</Label>
           <Input
-            id="location"
-            {...register("location", {
+            id="address"
+            {...register("address", {
               required: "위치는 필수입니다"
             })}
             placeholder="예: 아주대학교 정문 도보 5분"
           />
-          {errors.location && (
-            <ErrorMessage>{errors.location.message}</ErrorMessage>
+          {errors.address && (
+            <ErrorMessage>{errors.address.message}</ErrorMessage>
           )}
         </FormGroup>
 
@@ -229,50 +227,14 @@ function SubmitRestaurant() {
         </FormGroup>
 
         <FormGroup>
-          <Label htmlFor="recommendedMenu">추천 메뉴</Label>
+          <Label htmlFor="menu">추천 메뉴</Label>
           <Textarea
-            id="recommendedMenu"
-            {...register("recommendedMenu")}
+            id="menu"
+            {...register("menu")}
             placeholder="예: 치즈닭갈비, 막국수, 볶음밥"
           />
         </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="review">한줄평</Label>
-          <Textarea
-            id="review"
-            {...register("review")}
-            placeholder="이 맛집만의 특별한 점을 알려주세요"
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="submitterName">제보자 이름</Label>
-          <Input
-            id="submitterName"
-            {...register("submitterName")}
-            placeholder="선택사항"
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="submitterEmail">이메일</Label>
-          <Input
-            id="submitterEmail"
-            type="email"
-            {...register("submitterEmail", {
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "올바른 이메일 형식이 아닙니다"
-              }
-            })}
-            placeholder="선택사항 (답변받을 이메일)"
-          />
-          {errors.submitterEmail && (
-            <ErrorMessage>{errors.submitterEmail.message}</ErrorMessage>
-          )}
-        </FormGroup>
-
+        
         <SubmitButton type="submit" disabled={isSubmitting}>
           {isSubmitting ? '제출 중...' : '맛집 제보하기'}
         </SubmitButton>
